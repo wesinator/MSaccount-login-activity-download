@@ -11,7 +11,6 @@ setTimeout(function() {
   // https://stackoverflow.com/questions/34101871/save-data-using-greasemonkey-tampermonkey-for-later-retrieval
   var a = document.createElement("a");
 
-  // need encodeURIComponent to include json newlines properly
   a.href = "data:text/json;charset=utf-8," + parseJsonActivity();
 
   // Get date UTC
