@@ -11,7 +11,12 @@ setTimeout(function() {
   // https://stackoverflow.com/questions/34101871/save-data-using-greasemonkey-tampermonkey-for-later-retrieval
   var a = document.createElement("a");
 
-  a.href = "data:text/json;charset=utf-8," + parseJsonActivity();
+  // login data in jsonActivity var
+  // requires unsafeWindow to access page vars in userscript - https://wiki.greasespot.net/UnsafeWindow
+  var rawData = unsafeWindow.jsonActivity;
+  console.log("activity json data:", rawData);
+
+  a.href = "data:text/json;charset=utf-8," + decodeEscapedJson(rawData);
 
   // Get date UTC
   var utcDate = new Date().toJSON().slice(0,10);
@@ -20,14 +25,9 @@ setTimeout(function() {
   a.click();
 }, 2000);
 
-function parseJsonActivity() {
-  // login data in jsonActivity var
-  // requires unsafeWindow to access page vars in userscript - https://wiki.greasespot.net/UnsafeWindow
-  var rawData = unsafeWindow.jsonActivity;
-  console.log("activity json data:", rawData);
-
-  var dataJson = JSON.parse(rawData);
-  var dataStr = JSON.stringify(dataJson, null, indent=2);
-
-  return encodeURIComponent(dataStr);
+// decodes double '\' escaped json data
+function decodeEscapedJson(json) {
+  var jsonParsed = JSON.parse(json);
+  var jsonStr = JSON.stringify(jsonParsed, null, indent=2);
+  return encodeURIComponent(jsonStr);
 }
